@@ -100,6 +100,13 @@ CreateThread(function()
     loadDoors()
 end)
 
+function MZDoorsPlayerActionAllowed(source)
+    local ok, allowed, result = pcall(function()
+        return exports['mz_core']:CanPlayerPerformAction(source, 'property.use')
+    end)
+    return ok and allowed == true and type(result) == 'table' and result.allowed == true
+end
+
 RegisterNetEvent('mz_doors:server:requestDoors', function()
     local src = source
     if not Loaded then loadDoors() end
@@ -161,6 +168,10 @@ end)
 
 RegisterNetEvent('mz_doors:server:toggleNearest', function(id)
     local src = source
+    if not MZDoorsPlayerActionAllowed(src) then
+        notify(src, 'Acao bloqueada pelo estado do jogador.', 'error')
+        return
+    end
     id = tonumber(id)
     local door = id and Doors[id]
     if not door or door.active == false then return end

@@ -239,6 +239,10 @@ end)
 
 RegisterNetEvent('mz_doors:v2:server:toggle', function(idOrCode)
     local sourceId = source
+    if not MZDoorsPlayerActionAllowed(sourceId) then
+        TriggerClientEvent('mz_doors:client:notify', sourceId, 'Acao bloqueada pelo estado do jogador.', 'error')
+        return
+    end
     local definition = resolveDefinition(idOrCode)
     if not isRuntimeDefinition(definition) then return end
     if not playerNear(sourceId, definition) then
@@ -270,6 +274,10 @@ end)
 
 RegisterNetEvent('mz_doors:v2:server:knock', function(idOrCode)
     local sourceId = source
+    if not MZDoorsPlayerActionAllowed(sourceId) then
+        TriggerClientEvent('mz_doors:client:notify', sourceId, 'Acao bloqueada pelo estado do jogador.', 'error')
+        return
+    end
     local definition = resolveDefinition(idOrCode)
     if not isRuntimeDefinition(definition) or not playerNear(sourceId, definition) then return end
     local key = ('%s:%s'):format(sourceId, definition.id)

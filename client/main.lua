@@ -49,6 +49,19 @@ RegisterNetEvent('mz_doors:client:notify', function(msg, typ)
     notify(msg, typ)
 end)
 
+function MZDoorsCanPerformPropertyAction()
+    local ok, allowed = pcall(function()
+        return exports['mz_core']:CanLocalPlayerPerformAction('property.use')
+    end)
+    return ok and allowed == true
+end
+
+local function requirePropertyAction()
+    if MZDoorsCanPerformPropertyAction() then return true end
+    notify('Acao bloqueada pelo estado do jogador.', 'error')
+    return false
+end
+
 local function doorHash(id)
     return GetHashKey(('mz_world_door_%s'):format(id))
 end
@@ -251,6 +264,7 @@ end
 RegisterNetEvent('mz_doors:client:refreshInteractions', refreshInteractions)
 
 RegisterNetEvent('mz_doors:client:toggleByInteract', function(id)
+    if not requirePropertyAction() then return end
     local ped = PlayerPedId()
     if IsPedInAnyVehicle(ped, false) then
         notify('Saia do veiculo para interagir com a porta.', 'error')
@@ -271,6 +285,7 @@ AddEventHandler('onClientResourceStop', function(resourceName)
 end)
 
 RegisterCommand(Config.ToggleCommand, function()
+    if not requirePropertyAction() then return end
     if Config.V2 and Config.V2.RuntimeEnabled == true then
         TriggerEvent('mz_doors:v2:client:toggleNearest')
         return
@@ -302,7 +317,9 @@ CreateThread(function()
                     if dist <= drawDist then
                         text = text .. '\n~g~E~s~ Alternar'
                         if IsControlJustPressed(0, Config.ToggleKey) then
-                            TriggerServerEvent('mz_doors:server:toggleNearest', door.id)
+                            if requirePropertyAction() then
+                                TriggerServerEvent('mz_doors:server:toggleNearest', door.id)
+                            end
                             Wait(350)
                         end
                     end

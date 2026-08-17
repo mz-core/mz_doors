@@ -124,6 +124,10 @@ RegisterNetEvent('mz_doors:v2:client:removeDoor', function(id)
 end)
 
 RegisterNetEvent('mz_doors:v2:client:toggle', function(id)
+    if not MZDoorsCanPerformPropertyAction() then
+        TriggerEvent('mz_doors:client:notify', 'Acao bloqueada pelo estado do jogador.', 'error')
+        return
+    end
     if IsPedInAnyVehicle(PlayerPedId(), false) then
         TriggerEvent('mz_doors:client:notify', 'Saia do veiculo para interagir com a porta.', 'error')
         return
@@ -132,6 +136,10 @@ RegisterNetEvent('mz_doors:v2:client:toggle', function(id)
 end)
 
 RegisterNetEvent('mz_doors:v2:client:knock', function(id)
+    if not MZDoorsCanPerformPropertyAction() then
+        TriggerEvent('mz_doors:client:notify', 'Acao bloqueada pelo estado do jogador.', 'error')
+        return
+    end
     TriggerServerEvent('mz_doors:v2:server:knock', tonumber(id))
 end)
 
@@ -155,6 +163,10 @@ local function nearestV2Door(maxDistance)
 end
 
 AddEventHandler('mz_doors:v2:client:toggleNearest', function()
+    if not MZDoorsCanPerformPropertyAction() then
+        TriggerEvent('mz_doors:client:notify', 'Acao bloqueada pelo estado do jogador.', 'error')
+        return
+    end
     local door = nearestV2Door(Config.DrawDistance)
     if not door then
         TriggerEvent('mz_doors:client:notify', 'Nenhuma porta proxima.', 'error')

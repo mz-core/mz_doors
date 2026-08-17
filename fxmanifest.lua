@@ -25,4 +25,7 @@ server_scripts {
     'server/v2.lua'
 }
 
-dependency 'oxmysql'
+dependencies {
+    'oxmysql',
+    'mz_core'
+}
