@@ -11,13 +11,11 @@ local function coreCall(exportName, ...)
         elseif exportName == 'HasGlobalPermission' then
             return exports['mz_core']:HasGlobalPermission(args[1], args[2])
         elseif exportName == 'HasGradeOrAbove' then
-            return exports['mz_core']:HasGradeOrAbove(args[1], args[2], args[3])
+            return exports['mz_org']:HasGradeOrAbove(args[1], args[2], args[3])
         elseif exportName == 'CanOrg' then
-            return exports['mz_core']:CanOrg(args[1], args[2], args[3])
+            return exports['mz_org']:CanOrg(args[1], args[2], args[3])
         elseif exportName == 'GetPlayerOrgs' then
-            return exports['mz_core']:GetPlayerOrgs(args[1])
-        elseif exportName == 'GetPlayer' then
-            return exports['mz_core']:GetPlayerSnapshot(args[1])
+            return exports['mz_org']:GetPlayerOrgs(args[1])
         end
         error(('unsupported mz_core export: %s'):format(tostring(exportName)))
     end)
@@ -70,19 +68,6 @@ local function evaluate(source, policy, depth)
                     gradeAllowed = true
                     break
                 end
-            end
-        end
-        if not gradeAllowed then
-            local player = coreCall('GetPlayer', source)
-            local primary = type(player) == 'table' and player.job or nil
-            local grade = type(primary) == 'table' and primary.grade or nil
-            local gradeLevel = type(grade) == 'table' and grade.level
-                or (type(primary) == 'table' and (primary.gradeLevel or primary.grade))
-            if type(primary) == 'table'
-                and MZDoorsV2Logic.Trim(primary.code, 64):lower() == orgCode
-                and primary.active ~= false
-                and (tonumber(gradeLevel) or 0) >= minGrade then
-                gradeAllowed = true
             end
         end
         if not gradeAllowed then

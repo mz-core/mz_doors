@@ -60,17 +60,17 @@ accessFile:close()
 expect('core access bridge does not use shifting dynamic export calls',
     accessSource:find("exports['mz_core'][exportName]", 1, true) == nil)
 expect('organization grade uses official method export',
-    accessSource:find("exports['mz_core']:HasGradeOrAbove", 1, true) ~= nil)
+    accessSource:find("exports['mz_org']:HasGradeOrAbove", 1, true) ~= nil)
 expect('organization capability uses official method export',
-    accessSource:find("exports['mz_core']:CanOrg", 1, true) ~= nil)
+    accessSource:find("exports['mz_org']:CanOrg", 1, true) ~= nil)
 expect('organization access can refresh memberships from the core',
-    accessSource:find("exports['mz_core']:GetPlayerOrgs", 1, true) ~= nil)
+    accessSource:find("exports['mz_org']:GetPlayerOrgs", 1, true) ~= nil)
 
 local serverFile = assert(io.open('mz_doors/server/v2.lua', 'r'))
 local serverSource = serverFile:read('*a')
 serverFile:close()
-expect('door creation validates organization against the core catalog',
-    serverSource:find("exports['mz_core']:GetOrgByCode", 1, true) ~= nil)
+expect('door creation validates organization against the canonical catalog',
+    serverSource:find("exports['mz_org']:GetOrgByCode", 1, true) ~= nil)
 expect('door creation stores the canonical organization code',
     serverSource:find("code = MZDoorsV2Logic.Trim(organization.code, 64):lower()", 1, true) ~= nil)
 
@@ -79,8 +79,8 @@ local adminServerSource = adminServerFile:read('*a')
 adminServerFile:close()
 expect('admin exposes the organization catalog callback',
     adminServerSource:find('listWorldOrganizations', 1, true) ~= nil)
-expect('admin organization catalog comes from mz_core',
-    adminServerSource:find("exports['mz_core']:ListOrgs", 1, true) ~= nil)
+expect('admin organization catalog comes from mz_org',
+    adminServerSource:find("exports['mz_org']:ListOrgs", 1, true) ~= nil)
 
 local wizardFile = assert(io.open('mz_admin/client/world_wizard.lua', 'r'))
 local wizardSource = wizardFile:read('*a')

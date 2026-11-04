@@ -27,5 +27,6 @@ server_scripts {
 
 dependencies {
     'oxmysql',
-    'mz_core'
+    'mz_core',
+    'mz_org'
 }

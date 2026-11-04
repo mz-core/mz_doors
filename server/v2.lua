@@ -35,7 +35,7 @@ local function canonicalizeCreatePolicy(policy)
 
         local orgCode = MZDoorsV2Logic.Trim(policy.code, 64):lower()
         local callOk, organization = pcall(function()
-            return exports['mz_core']:GetOrgByCode(orgCode)
+            return exports['mz_org']:GetOrgByCode(orgCode)
         end)
         if not callOk then return nil, 'organization_repository_unavailable' end
         if type(organization) ~= 'table' then return nil, 'organization_not_found' end
